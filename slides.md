@@ -288,6 +288,22 @@ export default function IndexPage () {
 
 ----
 
+### Client-side data fetching
+
+```jsx
+export default function IndexPage () {
+  const [restaurants, setRestaurants] = useState()
+  useEffect(() => fetch(`${STRAPI_ENDPOINT}/restaurants`)
+          .then(res => res.json())
+          .then(json => setRestaurants(json)), [])
+  return restaurants !== undefined 
+          ? <RestaurantList restaurants={restaurants} />
+          : <Spinner /> // Loading data...
+}
+```
+
+----
+
 ### Static Pre-rendering
 
 ```jsx
@@ -318,10 +334,16 @@ export async function getStaticProps(context) {
         "restaurants": "..."
       }
     }</script>
-    <script src="/__next/static/pages/IndexPage.js" async defer />
+    <script src="/__next/static/pages/IndexPage.js" async />
   </body>
 </html>
 ```
+
+----
+
+### Code elimination
+
+![](slide-images/nextjs-code-elimination.png)
 
 ----
 
@@ -379,9 +401,3 @@ export default function IndexPage ({ restaurants }) {
   return <RestaurantList restaurants={data} />
 }
 ```
-
----
-
-### Code elimination
-
-![](slide-images/nextjs-code-elimination.png)
