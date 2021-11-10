@@ -89,6 +89,32 @@ Open-Source met JS frameworks. Geen propriatary services voor rendering, caching
 
 ---
 
+### Prototype
+
+![](slide-images/snapshot.png)
+
+Note: We gaan een van de React demo apps, SnapShot, ombouwen met JamStack
+
+----
+
+### Next.js
+
+![](slide-images/nextjs-vercel.png)
+
+----
+
+### Vercel CDN
+
+![](slide-images/cdn.png)
+
+----
+
+### Vercel Dashboard
+
+![](slide-images/vercel-dashboard.png)
+
+---
+
 ### J is for Javascript
 
 - React <!-- .element: class="fragment" -->
@@ -110,9 +136,9 @@ Open-Source met JS frameworks. Geen propriatary services voor rendering, caching
 ```jsx
 function MyComponent () {
   return (
-    <div>
-      <h1>This is a simple react component</h1>
-    </div>
+          <div>
+            <h1>This is a simple react component</h1>
+          </div>
   )
 }
 ```
@@ -126,10 +152,10 @@ function MyComponent () {
   const [clicks, setClicks] = useState(0)
   let onClick = () => setClicks(clicks + 1)
   return (
-    <div>
-      <h1>You have clicked the button {clicks} times</h1>
-      <button onClick={onClick}>Click Me!</button>
-    </div>
+          <div>
+            <h1>You have clicked the button {clicks} times</h1>
+            <button onClick={onClick}>Click Me!</button>
+          </div>
   )
 }
 ```
@@ -142,12 +168,12 @@ function MyComponent () {
 function MyComponent () {
   const session = useContext(SessionContext)
   return (
-    <div>
-      <h1>Welcome!</h1>
-      {session.loggedIn && (
-        <p>You are logged in!</p>
-      )}
-    </div>
+          <div>
+            <h1>Welcome!</h1>
+            {session.loggedIn && (
+                    <p>You are logged in!</p>
+            )}
+          </div>
   )
 }
 ```
@@ -158,10 +184,10 @@ function MyComponent () {
 
 ```html
 <html>
-  <head>...</head>
-  <body>
-    <div id="app"></div>
-  </body>
+<head>...</head>
+<body>
+<div id="app"></div>
+</body>
 </html>
 ```
 ```jsx
@@ -185,13 +211,13 @@ ReactDOM.render(<MyComponent />, document.getElementById('app'))
 
 ```jsx
 return (
-  <Auth0Provider
-    domain="YOUR_DOMAIN"
-    clientId="YOUR_CLIENT_ID"
-    redirectUri={window.location.origin}
-  >
-    <App />
-  </Auth0Provider> 
+        <Auth0Provider
+                domain="YOUR_DOMAIN"
+                clientId="YOUR_CLIENT_ID"
+                redirectUri={window.location.origin}
+        >
+          <App />
+        </Auth0Provider>
 )
 ```
 ```jsx
@@ -226,13 +252,13 @@ const restaurants = await res.json()
 
 ----
 
-### Serverkess API
+### Serverless API
 
 `src/pages/api/restaurants.js`
 ```js
 export default async function (req, res) {
   const restaurants = await db.restaurants.find()
-  res.setHeader("Cache-Control", 
+  res.setHeader("Cache-Control",
           "s-maxage=1, stale-while-revalidate=59")
   res.json(restaurants)
 }
@@ -278,11 +304,27 @@ import RestaurantList from '../components/restaurant-list'
 
 export default function IndexPage () {
   return (
-    <div>
-      <h1>Index page</h1>
-      <RestaurantList />
-    </div>
+          <div>
+            <h1>Index page</h1>
+            <RestaurantList />
+          </div>
   )
+}
+```
+
+----
+
+### Client-side data fetching
+
+```jsx
+export default function IndexPage () {
+  const [restaurants, setRestaurants] = useState()
+  useEffect(() => fetch(`${STRAPI_ENDPOINT}/restaurants`)
+          .then(res => res.json())
+          .then(json => setRestaurants(json)), [])
+  return restaurants !== undefined 
+          ? <RestaurantList restaurants={restaurants} />
+          : <Spinner /> // Loading data...
 }
 ```
 
@@ -318,10 +360,16 @@ export async function getStaticProps(context) {
         "restaurants": "..."
       }
     }</script>
-    <script src="/__next/static/pages/IndexPage.js" async defer />
+    <script src="/__next/static/pages/IndexPage.js" async />
   </body>
 </html>
 ```
+
+----
+
+### Code elimination
+
+![](slide-images/nextjs-code-elimination.png)
 
 ----
 
@@ -382,6 +430,21 @@ export default function IndexPage ({ restaurants }) {
 
 ---
 
-### Code elimination
+## Nextjs Summary
 
-![](slide-images/nextjs-code-elimination.png)
+- File-based router
+- Static generation
+- Cache revalidation
+- DNS-friendly
+
+----
+
+![](slide-images/benchmark.png)
+
+---
+
+## Assignment
+
+- Clone **github.com/lenis0012/jamstack-sessie**
+- Checkout `solution`
+- Deploy to vercel.com
