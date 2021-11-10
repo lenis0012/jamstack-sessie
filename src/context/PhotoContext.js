@@ -3,9 +3,9 @@ import axios from "axios";
 import { apiKey } from "../api/config";
 export const PhotoContext = createContext();
 
-const PhotoContextProvider = props => {
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PhotoContextProvider = ({ children, fallbackData }) => {
+  const [images, setImages] = useState(fallbackData);
+  const [loading, setLoading] = useState(!fallbackData);
   const runSearch = query => {
     axios
       .get(
@@ -24,7 +24,7 @@ const PhotoContextProvider = props => {
   };
   return (
     <PhotoContext.Provider value={{ images, loading, runSearch }}>
-      {props.children}
+      {children}
     </PhotoContext.Provider>
   );
 };
